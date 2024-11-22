@@ -1,0 +1,53 @@
+// auth.js
+import axios from '@/utils/axios';
+
+export default {
+    login(credentials) {
+        return axios.post('/auth/login', credentials)
+            .then(response => {
+                // 登录成功，处理响应数据
+                const { token, user } = response.data; // 假设后端返回了这些数据
+                if (token) {
+                    // 存储令牌到localStorage
+                    localStorage.setItem('token', token);
+                    // 可以在这里更新Vue组件的状态或执行其他操作
+                    // 例如，使用Vue的Event Bus、Vuex、Pinia或直接在组件中监听登录状态的变化
+                }
+                // 返回响应数据给调用者
+                return response.data;
+            })
+            .catch(error => {
+                // 登录失败，处理错误
+                console.error('Login error:', error);
+                // 可以在这里显示错误消息给用户
+                // 例如，使用Vue的alert组件、Toast消息或直接在控制台中显示
+                // 抛出一个错误给调用者
+                throw new Error('Login failed');
+            });
+    },
+    register(user) {
+        return axios.post('/auth/register', user)
+            .then(response => {
+                // 注册成功，处理响应数据
+                const { message } = response.data; // 假设后端返回了一个消息
+                alert(message); // 显示注册成功的消息给用户
+                // 可以在这里执行其他操作，例如自动登录用户
+                // return axios.post('/auth/login', { username: user.username, password: user.password }) // 自动登录的示例（不推荐在客户端存储明文密码）
+                //     .then(loginResponse => {
+                //         // 处理登录响应...
+                //     })
+                //     .catch(loginError => {
+                //         // 处理登录错误...
+                //     });
+                // 返回响应数据给调用者（如果需要）
+                return response.data;
+            })
+            .catch(error => {
+                // 注册失败，处理错误
+                console.error('Registration error:', error);
+                // 可以在这里显示错误消息给用户
+                // 抛出一个错误给调用者
+                throw new Error('Registration failed');
+            });
+    }
+};
